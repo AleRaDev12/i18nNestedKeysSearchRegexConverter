@@ -10,9 +10,9 @@
 <div class="container mx-auto px-4 text-center">
   <h1 class="text-3xl font-bold">Localization Key to Regex Converter</h1>
   <p class="text-xl mt-2">Convert composite localization keys into regular expressions for efficient search in localization files.</p>
-  <p class="font-mono mt-4">Example: DeviceTab.Modal.Description -> DeviceTab[^}]*Modal[^}]*Description</p>
+  <p class="font-mono mt-4">Example: "DeviceTab"[\s\S\n]*?"Modal"[\s\S\n]*?"Description"</p>
   <div class="mt-4">
-    <input type="text" id="inputString" placeholder="Enter string..." class="p-2 bg-gray-700 border border-gray-600 rounded-l w-1/3 min-w-[300px] mx-auto focus:outline-none">
+    <input type="text" id="inputString" placeholder="Enter string..." class="p-2 bg-gray-700 border border-gray-600 rounded-l w-1/3 min-w-[300px] mx-auto focus:outline-none m-0">
     <button id="convertButton" class="p-2 bg-blue-500 rounded-r text-white">Convert</button>
   </div>
   <p class="text-gray-400 mt-2">After conversion, the result will be automatically copied to the clipboard.</p>
@@ -35,7 +35,8 @@
     inputString.focus();
 
     async function convertStringToRegex() {
-      const convertedRegex = inputString.value.split('.').map(part => `${part}[^}]*`).join('').slice(0, -5);
+      const parts = inputString.value.split('.');
+      const convertedRegex = parts.map(part => `"${part}"[\\s\\S\\n]*?`).join('').slice(0, -10);
       outputRegex.textContent = convertedRegex;
       await navigator.clipboard.writeText(convertedRegex);
       showToast();
