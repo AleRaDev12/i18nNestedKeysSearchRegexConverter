@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localization Key to Regex Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-white h-screen flex justify-center items-center">
+<div class="container mx-auto px-4 text-center">
+  <h1 class="text-3xl font-bold">Localization Key to Regex Converter</h1>
+  <p class="text-xl mt-2">Convert composite localization keys into regular expressions for efficient search in localization files.</p>
+  <p class="font-mono mt-4">Example: DeviceTab.Modal.Description -> DeviceTab[^}]*Modal[^}]*Description</p>
+  <div class="mt-4">
+    <input type="text" id="inputString" placeholder="Enter string..." class="p-2 bg-gray-700 border border-gray-600 rounded-l w-1/3 min-w-[300px] mx-auto focus:outline-none">
+    <button id="convertButton" class="p-2 bg-blue-500 rounded-r text-white">Convert</button>
+  </div>
+  <p class="text-gray-400 mt-2">After conversion, the result will be automatically copied to the clipboard.</p>
+  <p id="outputRegex" class="font-mono mt-4 h-6 before:content-[''] text-lg"></p>
+  <div id="toast" class="opacity-0 transition-opacity duration-300 bg-gray-700 text-white text-center rounded-lg px-4 py-3 center max-w-s mx-auto inline-block mt-4">
+    The regular expression has been copied to the clipboard.
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputString = document.getElementById("inputString");
+    const outputRegex = document.getElementById("outputRegex");
+    const toast = document.getElementById("toast");
+
+    document.getElementById("convertButton").addEventListener("click", convertStringToRegex);
+    inputString.addEventListener("keypress", e => {
+      if (e.key === "Enter") convertStringToRegex();
+    });
+    inputString.focus();
+
+    async function convertStringToRegex() {
+      const convertedRegex = inputString.value.split('.').map(part => `${part}[^}]*`).join('').slice(0, -5);
+      outputRegex.textContent = convertedRegex;
+      await navigator.clipboard.writeText(convertedRegex);
+      showToast();
+    }
+
+    function showToast() {
+      toast.classList.remove("opacity-0");
+      setTimeout(() => toast.classList.add("opacity-0"), 3000);
+    }
+  });
+</script>
+</body>
+</html>
